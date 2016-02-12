@@ -1,10 +1,11 @@
 ---
-title: "IS4250 Tut2"
+title: "IS4250 Tut3"
 author: "Cao Shuwei"
-date: "22 January 2016"
+date: "22 February 2016"
 output: md_document
 ---
 ```{r,echo=FALSE}
+library(dplyr)
 library(ggplot2)
 data = read.csv("/Users/jim/Downloads/labs.csv")
 sat=data[,12]
@@ -65,5 +66,50 @@ bar_1=barplot(rate2, names = age,
               main = "Difference in service satisfaction for age",col="light green")
 
 text(x=bar_1,0,round(rate2, 1), xpd=TRUE,cex=1,pos=3)
+
+
+wait_sat = data[,c(12,15)]
+df_3= data.frame(WaitTime=integer(),SatisfactionRate=double())
+wait_sat = wait_sat[order(wait_sat$WaitTime),]
+j=0
+
+for(i in wait_sat$WaitTime) {
+  if (i != j) {
+  j=i
+  temp=wait_sat[wait_sat$WaitTime==i,]
+  sat_rate=nrow(temp[temp$SvcSat=="Y",])/nrow(temp)
+  data4 = data.frame(WaitTime = i,SatisfactionRate = sat_rate)
+  df_3 = rbind(df_3,data4)
+  }
+}
+qplot(x = WaitTime, y = SatisfactionRate, color = 24, data = df_3, geom = "line")
+
+health_data = data[,c(8,13,16)]
+df_4 = data.frame(TC=integer(),BMI=double())
+health_data = health_data[order(health_data$TC),]
+BMI1=health_data[,3]/((health_data[,1])^2)
+health_data[,"BMI"]=BMI1
+h=0
+
+for(k in health_data$TC) {
+  if(k != h) {
+    h=k
+    temp = health_data[health_data$TC==k,]
+    bmi2 = sum(temp$BMI)/nrow(temp)
+    data5 = data.frame(BMI = bmi2,TC = k)
+    df_4 = rbind(df_4,data5)
+  }
+}
+qplot(x = TC, y = BMI, color = 24, data = df_4, geom = "line")
+
+assume_data = data[,c(1,2,6,11,13)]
+assume_data[,"BMI"]=BMI1
+assume_data = assume_data[assume_data$TC!="na",]
+assume_data[,5] = as.numeric(as.character(assume_data[,5]))
+
+model = lm(BMI ~ Citizen+Gender+SBP+TC,data=assume_data)
+case = data.frame(AGE=45,Citizen="N",Gender="M",SBP=135,TC=150)
+prediction = predict(model,newdata= case)
+print(prediction)
 
 ```
