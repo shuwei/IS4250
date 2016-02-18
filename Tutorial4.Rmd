@@ -1,0 +1,29 @@
+---
+title: "Tutorial4"
+author: "Cao Shuwei"
+date: "12 February 2016"
+output: md_document
+---
+
+```{r, echo=FALSE}
+library(dplyr)
+library(ggplot2)
+
+good_rate = 3/10
+bad_rate = 4/6
+differ = good_rate - bad_rate
+
+print("Q(a) Different between two rate is")
+print(differ)
+
+testor = rbind(c(3,7),c(4,2))
+fisher.test(testor)
+print("Q(b) the two rates is statistically different")
+
+
+print("Q(c) Cannot use chi-square test because it is used for the sample whose size is large")
+
+
+```
+
+
